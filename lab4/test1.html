@@ -35,16 +35,8 @@
     .error {
         color: red;
     }
-    .country-info,
-    .bordering-countries {
-        display: flex;
-        flex-direction: column;
-    }
-    .bordering-countries {
-        margin-left: 20px;
-    }
-    .bordering-countries h3 {
-        margin-top: 0;
+    article {
+        margin-bottom: 20px;
     }
 </style>
 </head>
@@ -53,16 +45,19 @@
 <h2>Country Information</h2>
 <input type="text" id="countryInput" placeholder="Enter a country name">
 <button onclick="fetchCountryInfo()">Submit</button>
-<div class="country-info">
+
+<article id="countryDetails">
     <h3 id="countryName"></h3>
     <p id="capital"></p>
     <p id="population"></p>
     <p id="region"></p>
-</div>
-<div class="bordering-countries">
+</article>
+
+<article id="borderingCountries">
     <h3>Bordering Countries</h3>
     <ul id="borderCountries"></ul>
-</div>
+</article>
+
 <p id="error" class="error"></p>
 
 <script>

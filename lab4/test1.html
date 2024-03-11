@@ -26,9 +26,6 @@
         padding: 10px 20px;
         font-size: 16px;
     }
-    button:hover {
-        background-color: #45a049;
-    }
     .error {
         color: red;
     }
@@ -55,7 +52,7 @@
 
 <h2>Country Information</h2>
 <input type="text" id="countryInput" placeholder="Enter a country name">
-<button onclick="fetchCountryInfo()">Get COuntry Info</button>
+<button onclick="fetchCountryInfo()">Get Country Info</button>
 
 <article id="countryDetails">
     <h3 id="countryName"></h3>
@@ -104,7 +101,7 @@ function fetchCountryInfo() {
                 fetch(`https://restcountries.com/v3.1/alpha/${border}`)
                 .then(response => response.json())
                 .then(borderData => {
-                    borderCountriesInfo += `<li>${borderData[0].name.common} <img src="${borderData[0].flags.svg}" alt="${borderData[0].name.common} flag" width="50"></li>`;
+                    borderCountriesInfo += `<li>${borderData[0].name.common} <img src="${borderData[0].flags.svg}" alt="${borderData[0].name.common} flag" width="25"></li>`;
                     document.getElementById('borderCountries').innerHTML = borderCountriesInfo;
                 })
                 .catch(error => {

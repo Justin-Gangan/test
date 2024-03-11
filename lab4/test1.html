@@ -47,6 +47,7 @@
 <p id="population"></p>
 <p id="region"></p>
 <img id="flag" alt="Country flag" width="100">
+<h3>Bordering Countries</h3>
 <ul id="borderCountries"></ul>
 <p id="error" class="error"></p>
 
@@ -79,10 +80,19 @@ function fetchCountryInfo() {
         let borderCountriesInfo = '';
         if (borders) {
             borders.forEach(border => {
-                borderCountriesInfo += `<li>${border}</li>`;
+                fetch(`https://restcountries.com/v3.1/alpha/${border}`)
+                .then(response => response.json())
+                .then(borderData => {
+                    borderCountriesInfo += `<li>${borderData[0].name.common} <img src="${borderData[0].flags.svg}" alt="${borderData[0].name.common} flag" width="50"></li>`;
+                    document.getElementById('borderCountries').innerHTML = borderCountriesInfo;
+                })
+                .catch(error => {
+                    console.error('Error fetching border country data:', error);
+                });
             });
+        } else {
+            document.getElementById('borderCountries').innerHTML = '<li>No bordering countries</li>';
         }
-        document.getElementById('borderCountries').innerHTML = borderCountriesInfo;
     })
     .catch(error => {
         document.getElementById('error').textContent = error.message;

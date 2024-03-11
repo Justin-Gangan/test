@@ -10,13 +10,19 @@
         margin: 0;
         padding: 0;
     }
-    .container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
+    .article-container::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    article {
+        float: left;
+        width: calc(50% - 10px);
+        margin-right: 20px;
+        margin-bottom: 20px;
+        padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        overflow: hidden; /* Clear floats */
     }
     input[type="text"] {
         padding: 10px;
@@ -36,49 +42,41 @@
     .error {
         color: red;
     }
-    article {
-        float: left; /* Float elements */
-        width: calc(50% - 10px); /* Adjust as needed */
-        margin-right: 20px; /* Add some spacing between articles */
-        box-sizing: border-box; /* Include padding and border in width */
-    }
     ul {
         margin: 0;
         padding: 0;
     }
     li {
         list-style: none;
+        margin-bottom: 5px;
     }
-    img {
-        display: block;
-        margin-bottom: 10px; /* Add some spacing below the image */
+    .country-flag {
+        width: 30px;
+        margin-right: 10px;
     }
 </style>
 </head>
 <body>
 
+    <input type="text" id="countryInput" placeholder="Enter a country name">
+    <button onclick="fetchCountryInfo()">Get Country Info</button>
+
 <h2>Country Information</h2>
-<input type="text" id="countryInput" placeholder="Enter a country name">
-<button onclick="fetchCountryInfo()">Submit</button>
+<aside class="article-container">
+    <article>
+        <p id="error" class="error"></p>
+        <h3 id="countryName"></h3>
+        <p id="capital"></p>
+        <p id="population"></p>
+        <p id="region"></p>
+        <img id="countryFlag" src="" alt="" width="100">
+    </article>
 
-<div class="container">
-
-<article id="countryDetails">
-    <h3 id="countryName"></h3>
-    <p id="capital"></p>
-    <p id="population"></p>
-    <p id="region"></p>
-    <img id="flag" alt="Country Flag" width="100">
-</article>
-
-<article id="borderingCountries">
-    <h3>Bordering Countries</h3>
-    <ul id="borderCountries"></ul>
-</article>
-
-</div>
-
-<p id="error" class="error"></p>
+    <article>
+        <h3>Bordering Countries</h3>
+        <ul id="borderCountries"></ul>
+    </article>
+</aside>
 
 <script>
 function fetchCountryInfo() {
@@ -104,7 +102,7 @@ function fetchCountryInfo() {
         document.getElementById('capital').textContent = `Capital: ${capital}`;
         document.getElementById('population').textContent = `Population: ${population}`;
         document.getElementById('region').textContent = `Region: ${region}`;
-        document.getElementById('flag').src = flags.svg; // Set the flag image source
+        document.getElementById('countryFlag').src = flags.png;
 
         let borderCountriesInfo = '';
         if (borders) {
@@ -112,7 +110,7 @@ function fetchCountryInfo() {
                 fetch(`https://restcountries.com/v3.1/alpha/${border}`)
                 .then(response => response.json())
                 .then(borderData => {
-                    borderCountriesInfo += `<li>${borderData[0].name.common} <img src="${borderData[0].flags.svg}" alt="${borderData[0].name.common} flag" width="50"></li>`;
+                    borderCountriesInfo += `<li><img class="country-flag" src="${borderData[0].flags.png}" alt="${borderData[0].name.common} flag">${borderData[0].name.common}</li>`;
                     document.getElementById('borderCountries').innerHTML = borderCountriesInfo;
                 })
                 .catch(error => {

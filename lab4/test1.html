@@ -93,7 +93,7 @@ function fetchCountryInfo() {
             fetch(`https://restcountries.com/v3.1/alpha/${border}`)
             .then(response => response.json())
             .then(borderData => {
-                borderCountriesInfo += `<p>${borderData[0].name.common}&nbsp;&nbsp;&nbsp;&nbsp; <img src="${borderData[0].flags.svg}" alt="${borderData[0].name.common} flag" width="50"></p>`;
+                borderCountriesInfo += `<p>${borderData[0].name.common}&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp; <img src="${borderData[0].flags.svg}" alt="${borderData[0].name.common} flag" width="50"></p>`;
                 document.getElementById('borderCountries').innerHTML = borderCountriesInfo;
             })
             .catch(error => {
@@ -103,8 +103,13 @@ function fetchCountryInfo() {
     } else {
         document.getElementById('borderCountries').innerHTML = '<p>No bordering countries</p>';
     }
+
+         // Display country flag
+        document.getElementById('countryFlag').src = flags.svg;
+        document.getElementById('countryFlag').alt = `${input} flag`;
+
+    
 });
-}
 </script>
 
 

@@ -4,53 +4,105 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Country Information</title>
+<style>
+  /* Use CSS for styling */
+  .container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .container > h2 {
+    margin: 0;
+  }
+
+  .country-info,
+  .bordering-countries {
+    margin-top: 10px;
+  }
+
+  .country-info p {
+    margin: 5px 0;
+  }
+
+  .bordering-countries ul {
+    padding-left: 0;
+    margin-top: 5px;
+    list-style: none;
+  }
+
+  .bordering-countries ul li {
+    margin-bottom: 5px;
+  }
+</style>
 </head>
 <body>
 <h1>Country Information</h1>
-<input type="text" id="countryInput" placeholder="Enter country name">
+
+<label for="countryInput">Enter Country Name:</label>
+<input type="text" id="countryInput">
 <button onclick="getCountryInfo()">Get Country Info</button>
-<br>
-<pre id="countryInfoDisplay"></pre>
-<pre id="borderingCountriesDisplay">Bordering Countries:</pre>
+
+<h2>Country Information</h2>
+<p id="countryDetails" class="country-info"></p>
+
+<h2>Bordering Countries</h2>
+<ul id="borderingCountries" class="bordering-countries"></ul>
 
 <script>
-    function getCountryInfo() {
-        const countryInput = document.getElementById('countryInput').value.trim();
-        if (countryInput === "") {
-            alert("Please enter a country name.");
-            return;
-        }
+function getCountryInfo() {
+  const countryInput = document.getElementById('countryInput').value.trim();
+  if (!countryInput) {
+    alert('Please enter a country name.');
+    return;
+  }
 
-        fetch(`https://restcountries.com/v3.1/name/${countryInput}`)
-        .then(response => {
+  fetch(`https://restcountries.com/v3.1/name/${countryInput}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Country not found.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      const country = data[0]; // Assuming the first result is the correct one
+      const countryDetails = `
+        Capital: ${country.capital}<br>
+        Population: ${country.population}<br>
+        Region: ${country.region}<br>
+        <img src="${country.flags.png}" alt="${country.name.common} Flag" height="50">
+      `;
+      document.getElementById('countryDetails').innerHTML = countryDetails;
+
+      const borderingCountries = country.borders;
+      const borderingCountriesList = document.getElementById('borderingCountries');
+      borderingCountriesList.innerHTML = '';
+      borderingCountries.forEach(borderingCountry => {
+        fetch(`https://restcountries.com/v3.1/alpha/${borderingCountry}`)
+          .then(response => {
             if (!response.ok) {
-                throw new Error('Country not found.');
+              throw new Error('Error fetching bordering country.');
             }
             return response.json();
-        })
-        .then(data => {
-            const country = data[0];
-            const countryInfo = `
-                Country Information:
-                Capital: ${country.capital}
-                Population: ${country.population}
-                Region: ${country.region}
+          })
+          .then(borderingCountryData => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+              ${borderingCountryData.name.common} 
+              <img src="${borderingCountryData.flags.png}" alt="${borderingCountryData.name.common} Flag" height="30">
             `;
-            const borderingCountries = country.borders.map(border => {
-                return `  ${border} \t{flag}`;
-            }).join("\n");
-
-            const displayText = `
-                ${countryInfo}
-                ${borderingCountries}
-            `;
-
-            document.getElementById('countryInfoDisplay').innerText = displayText;
-        })
-        .catch(error => {
-            document.getElementById('countryInfoDisplay').innerText = error.message;
-        });
-    }
+            borderingCountriesList.appendChild(listItem);
+          })
+          .catch(error => {
+            console.error('Error fetching bordering country:', error.message);
+          });
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+      alert(error.message);
+    });
+}
 </script>
 </body>
 </html>

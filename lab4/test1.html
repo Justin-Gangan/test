@@ -16,9 +16,9 @@
         padding: 20px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        display: flex; /* Use flexbox */
-        flex-direction: row; /* Arrange children horizontally */
-        justify-content: space-between; /* Distribute space between children */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* space between articles */
     }
     input[type="text"] {
         padding: 10px;
@@ -39,7 +39,14 @@
         color: red;
     }
     article {
-        margin-bottom: 20px;
+        flex: 1 1 100%; /* each article takes full width */
+    }
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+    li {
+        list-style: none;
     }
 </style>
 </head>

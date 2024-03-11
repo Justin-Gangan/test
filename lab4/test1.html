@@ -5,98 +5,121 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Country Information</title>
 <style>
-  /* Use CSS for styling */
-  h1, h2 {
-    margin: 0;
-  }
-
-  .country-info, .bordering-countries {
-    margin-bottom: 20px;
-  }
-
-  .country-info p {
-    margin: 5px 0;
-  }
-
-  .bordering-countries ul {
-    padding-left: 0;
-    margin-top: 5px;
-    list-style: none;
-  }
-
-  .bordering-countries ul li {
-    margin-bottom: 5px;
-  }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden; /* Clear floats */
+    }
+    input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+    .error {
+        color: red;
+    }
+    article {
+        float: left; /* Float elements */
+        width: calc(50% - 10px); /* Adjust as needed */
+        margin-right: 20px; /* Add some spacing between articles */
+        box-sizing: border-box; /* Include padding and border in width */
+    }
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+    li {
+        list-style: none;
+    }
+    img {
+        display: block;
+        margin-bottom: 10px; /* Add some spacing below the image */
+    }
 </style>
 </head>
 <body>
-<h1>Country Information</h1>
-
-<label for="countryInput">Enter Country Name:</label>
-<input type="text" id="countryInput">
-<button onclick="getCountryInfo()">Get Country Info</button>
 
 <h2>Country Information</h2>
-<p id="countryDetails" class="country-info"></p>
+<input type="text" id="countryInput" placeholder="Enter a country name">
+<button onclick="fetchCountryInfo()">Get COuntry Info</button>
 
-<h2>Bordering Countries</h2>
-<ul id="borderingCountries" class="bordering-countries"></ul>
+<article id="countryDetails">
+    <h3 id="countryName"></h3>
+    <p id="capital"></p>
+    <p id="population"></p>
+    <p id="region"></p>
+    <img id="flag" alt="Country Flag" width="100">
+</article>
+
+<article id="borderingCountries">
+    <h3>Bordering Countries</h3>
+    <ul id="borderCountries"></ul>
+</article>
+
+<p id="error" class="error"></p>
 
 <script>
-function getCountryInfo() {
-  const countryInput = document.getElementById('countryInput').value.trim();
-  if (!countryInput) {
-    alert('Please enter a country name.');
-    return;
-  }
+function fetchCountryInfo() {
+    const input = document.getElementById('countryInput').value.trim();
+    if (input === '') {
+        document.getElementById('error').textContent = 'Please enter a country name.';
+        return;
+    }
 
-  fetch(`https://restcountries.com/v3.1/name/${countryInput}`)
+    fetch(`https://restcountries.com/v3.1/name/${input}`)
     .then(response => {
-      if (!response.ok) {
-        throw new Error('Country not found.');
-      }
-      return response.json();
+        if (!response.ok) {
+            throw new Error('Country not found.');
+        }
+        return response.json();
     })
     .then(data => {
-      const country = data[0]; // Assuming the first result is the correct one
-      const countryDetails = `
-        Capital: ${country.capital}<br>
-        Population: ${country.population}<br>
-        Region: ${country.region}<br>
-        <img src="${country.flags.png}" alt="${country.name.common} Flag" height="50">
-      `;
-      document.getElementById('countryDetails').innerHTML = countryDetails;
+        const country = data[0];
+        const { capital, population, region, flags, borders } = country;
 
-      const borderingCountries = country.borders;
-      const borderingCountriesList = document.getElementById('borderingCountries');
-      borderingCountriesList.innerHTML = '';
+        document.getElementById('error').textContent = '';
+        document.getElementById('countryName').textContent = input;
+        document.getElementById('capital').textContent = `Capital: ${capital}`;
+        document.getElementById('population').textContent = `Population: ${population}`;
+        document.getElementById('region').textContent = `Region: ${region}`;
+        document.getElementById('flag').src = flags.svg; // Set the flag image source
 
-      borderingCountries.forEach(borderingCountry => {
-        fetch(`https://restcountries.com/v3.1/alpha/${borderingCountry}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Error fetching bordering country.');
-            }
-            return response.json();
-          })
-          .then(borderingCountryData => {
-            const listItem = document.createElement('li');
-            listItem.innerHTML = `
-              ${borderingCountryData.name.common} 
-              <img src="${borderingCountryData.flags.png}" alt="${borderingCountryData.name.common} Flag" height="30">
-            `;
-            borderingCountriesList.appendChild(listItem);
-          })
-          .catch(error => {
-            console.error('Error fetching bordering country:', error.message);
-          });
-      });
+        let borderCountriesInfo = '';
+        if (borders) {
+            borders.forEach(border => {
+                fetch(`https://restcountries.com/v3.1/alpha/${border}`)
+                .then(response => response.json())
+                .then(borderData => {
+                    borderCountriesInfo += `<li>${borderData[0].name.common} <img src="${borderData[0].flags.svg}" alt="${borderData[0].name.common} flag" width="50"></li>`;
+                    document.getElementById('borderCountries').innerHTML = borderCountriesInfo;
+                })
+                .catch(error => {
+                    console.error('Error fetching border country data:', error);
+                });
+            });
+        } else {
+            document.getElementById('borderCountries').innerHTML = '<li>No bordering countries</li>';
+        }
     })
     .catch(error => {
-      console.error('Error:', error.message);
-      alert(error.message);
+        document.getElementById('error').textContent = error.message;
     });
 }
 </script>
+
 </body>
 </html>

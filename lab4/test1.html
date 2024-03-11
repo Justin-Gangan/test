@@ -16,6 +16,7 @@
         padding: 20px;
         border: 1px solid #ccc;
         border-radius: 5px;
+        overflow: hidden; /* Clear floats */
     }
     input[type="text"] {
         padding: 10px;
@@ -36,10 +37,10 @@
         color: red;
     }
     article {
-        display: inline-block;
+        float: left; /* Float elements */
         width: calc(50% - 10px); /* Adjust as needed */
-        vertical-align: top;
-        box-sizing: border-box;
+        margin-right: 20px; /* Add some spacing between articles */
+        box-sizing: border-box; /* Include padding and border in width */
     }
     ul {
         margin: 0;
@@ -56,6 +57,8 @@
 <input type="text" id="countryInput" placeholder="Enter a country name">
 <button onclick="fetchCountryInfo()">Submit</button>
 
+<div class="container">
+
 <article id="countryDetails">
     <h3 id="countryName"></h3>
     <p id="capital"></p>
@@ -67,6 +70,8 @@
     <h3>Bordering Countries</h3>
     <ul id="borderCountries"></ul>
 </article>
+
+</div>
 
 <p id="error" class="error"></p>
 

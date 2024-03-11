@@ -16,9 +16,6 @@
         padding: 20px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
     }
     input[type="text"] {
         padding: 10px;
@@ -39,7 +36,10 @@
         color: red;
     }
     article {
-        flex: 1 1 calc(50% - 10px); /* Adjust as needed */
+        display: inline-block;
+        width: calc(50% - 10px); /* Adjust as needed */
+        vertical-align: top;
+        box-sizing: border-box;
     }
     ul {
         margin: 0;

@@ -51,6 +51,7 @@
     <p id="capital"></p>
     <p id="population"></p>
     <p id="region"></p>
+     <img id="countryFlag" src="" alt="">
 </article>
 
 <article id="borderingCountries">
@@ -101,12 +102,17 @@ function fetchCountryInfo() {
         } else {
             document.getElementById('borderCountries').innerHTML = '<li>No bordering countries</li>';
         }
+
+        // Display country flag
+        document.getElementById('countryFlag').src = flags.svg;
+        document.getElementById('countryFlag').alt = `${input} flag`;
     })
     .catch(error => {
         document.getElementById('error').textContent = error.message;
     });
 }
 </script>
+
 
 </body>
 </html>

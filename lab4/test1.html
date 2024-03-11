@@ -70,6 +70,7 @@ function getCountryInfo() {
       const borderingCountries = country.borders;
       const borderingCountriesList = document.getElementById('borderingCountries');
       borderingCountriesList.innerHTML = '';
+
       borderingCountries.forEach(borderingCountry => {
         fetch(`https://restcountries.com/v3.1/alpha/${borderingCountry}`)
           .then(response => {
